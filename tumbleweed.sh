@@ -25,7 +25,7 @@ function add_share() {
     echo "username=$username" | sudo tee $CREDENTIALS_DIR/$SHARE >/dev/null
     echo "password=$password" | sudo tee -a $CREDENTIALS_DIR/$SHARE >/dev/null
     sudo chmodx 600 $CREDENTIALS_DIR/$SHARE
-    echo "//$SERVER/$SHARE    $PREFIX/$SHARE    cifs    defaults,noauto,nofail,credentials=/etc/samba/credentials/gandor,x-systemd.automount,x-systemd.requires=network-online.target,gid=1000,uid=1000    0    0" | sudo tee -a /etc/fstab
+    echo "//$SERVER/$SHARE    $PREFIX/$SHARE    cifs    defaults,noauto,nofail,credentials= $CREDENTIALS_DIR/$SHARE,x-systemd.automount,x-systemd.requires=network-online.target,gid=1000,uid=1000    0    0" | sudo tee -a /etc/fstab
   fi
   sudo systemctl daemon-reload
   sudo systemctl start mnt-$SHARE.automount
