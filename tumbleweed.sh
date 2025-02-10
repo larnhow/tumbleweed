@@ -55,6 +55,10 @@ EOF
 
 sudo sysctl --system
 
+# https://www.reddit.com/r/openSUSE/comments/1gnkpzq/minimal_tumbleweed_i_dont_like_patterns_so_i_dont/
+sudo zypper install -y gnome-session-wayland gnome-console xdg-user-dirs-gtk pipewire-pulseaudio gnome-keyring desktop-file-utils gnome-backgrounds wallpaper-branding-openSUSE distribution-logos-openSUSE-icons flatpak podman distrobox
+
+
 sudo zypper install -y power-profiles-daemon
 sudo systemctl enable --now power-profiles-daemon.service
 
