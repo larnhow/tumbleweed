@@ -70,7 +70,7 @@ sudo rpm --import https://brave-browser-rpm-release.s3.brave.com/brave-core.asc
 sudo zypper addrepo https://brave-browser-rpm-release.s3.brave.com/brave-browser.repo
 sudo zypper install -y brave-browser
 
-sudo zypper install -y steam gamemode lutris mangohud dxvk xpadneo
+sudo zypper install -y steam gamemode lutris mangohud dxvk xpadneo-kmp-default
 
 sudo flatpak install -y com.github.rafostar.Clapper com.github.rafostar.Clapper.Enhancers io.missioncenter.MissionCenter io.github.flattool.Warehouse io.github.dvlv.boxbuddyrs io.podman_desktop.PodmanDesktop com.github.marhkb.Pods com.heroicgameslauncher.hgl com.usebottles.bottles com.mikrotik.WinBox com.mattjakeman.ExtensionManager
 
