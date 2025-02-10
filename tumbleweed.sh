@@ -1,49 +1,39 @@
 #!/bin/bash
-sudo mkdir -p /mnt/gandor
-sudo mkdir -p /mnt/medis
 
-sudo mkdir -p /etc/samba/credentials
+PREFIX="/mnt"
+SERVER="nuc8.home.arpa"
 
+function add_share() {
+  SERVER=$1
+  SHARE=$2
+  PREFIX=$3
+  CREDENTIALS_DIR="/etc/samba/credentials"
+  sudo mkdir -p $PREFIX/$SHARE
+  sudo mkdir -p $CREDENTIALS_DIR
+  sudo chown root:root $CREDENTIALS_DIR
+  sudo chmod 700 $CREDENTIALS_DIR
+    
+  if grep "//$SERVER/$SHARE" /etc/fstab > /dev/null
+  then
+    echo "share $SHARE already in /etc/fstab"
+  else
+    echo -n "username for share $SHARE: "
+    read username
+    echo -n Password: 
+    read -s password
 
+    echo "username=$username" | sudo tee $CREDENTIALS_DIR/$SHARE >/dev/null
+    echo "password=$password" | sudo tee -a $CREDENTIALS_DIR/$SHARE >/dev/null
+    sudo chmodx 600 $CREDENTIALS_DIR/$SHARE
+    echo "//$SERVER/$SHARE    $PREFIX/$SHARE    cifs    defaults,noauto,nofail,credentials=/etc/samba/credentials/gandor,x-systemd.automount,x-systemd.requires=network-online.target,gid=1000,uid=1000    0    0" | sudo tee -a /etc/fstab
+  fi
+  sudo systemctl daemon-reload
+  sudo systemctl start mnt-$SHARE.automount
 
-sudo chown root:root /etc/samba/credentials
-sudo chmod 700 /etc/samba/credentials
+}
 
-echo
-
-if grep '//nuc8.home.arpa/gandor' /etc/fstab > /dev/null
-then
-      echo "share gandor already in /etc/fstab"
-else
-  echo -n "username for share gandor: "
-  read username
-  echo -n Password: 
-  read -s password
-
-  echo "username=$username" | sudo tee /etc/samba/credentials/gandor >/dev/null
-  echo "password=$password" | sudo tee -a /etc/samba/credentials/gandor >/dev/null
-  sudo chmodx 600 /etc/samba/credentials/gandor
-    echo '//nuc8.home.arpa/gandor    /mnt/gandor    cifs    defaults,noauto,nofail,credentials=/etc/samba/credentials/gandor,x-systemd.automount,x-systemd.requires=network-online.target,gid=1000,uid=1000    0    0' | sudo tee -a /etc/fstab
-fi
-
-if grep '//nuc8.home.arpa/media' /etc/fstab > /dev/null
-then
-  echo "share media already in /etc/fstab"
-else
-  echo -n "username for share media: "
-  read username
-  echo -n Password: 
-  read -s password
-
-  echo "username=$username" | sudo tee /etc/samba/credentials/media >/dev/null
-  echo "password=$password" | sudo tee -a /etc/samba/credentials/media >/dev/null
-  sudo chmod 600 /etc/samba/credentials/media
-  echo '//nuc8.home.arpa/media    /mnt/media    cifs    defaults,noauto,nofail,credentials=/etc/samba/credentials/media,x-systemd.automount,x-systemd.requires=network-online.target,gid=1000,uid=1000    0    0' | sudo tee -a /etc/fstab
-fi
-sudo systemctl daemon-reload
-
-sudo systemctl start mnt-gandor.automount
-sudo systemctl start mnt-media.automount
+add_share $SERVER gandor $PREFIX
+add_share $SERVER media $PREFIX
 
 sudo tee /etc/sysctl.d/\
 10-network.conf << EOF > /dev/null
@@ -53,7 +43,10 @@ net.core.rmem_max=7500000
 net.core.wmem_max=7500000
 EOF
 
-#sudo zypper install systemd-zram-service && sudo zramswapon && sudo systemctl enable zramswap.service
+sudo zypper install systemd-zram-service 
+sudo zramswapon 
+sudo systemctl enable zramswap.service
+
 sudo tee /etc/sysctl.d/\
 60-zram.conf << EOF > /dev/null
 vm.page-cluster = 0
