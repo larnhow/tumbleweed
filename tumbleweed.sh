@@ -24,7 +24,7 @@ function add_share() {
 
     echo "username=$username" | sudo tee $CREDENTIALS_DIR/$SHARE >/dev/null
     echo "password=$password" | sudo tee -a $CREDENTIALS_DIR/$SHARE >/dev/null
-    sudo chmodx 600 $CREDENTIALS_DIR/$SHARE
+    sudo chmod 600 $CREDENTIALS_DIR/$SHARE
     echo "//$SERVER/$SHARE    $PREFIX/$SHARE    cifs    defaults,noauto,nofail,credentials= $CREDENTIALS_DIR/$SHARE,x-systemd.automount,x-systemd.requires=network-online.target,gid=1000,uid=1000    0    0" | sudo tee -a /etc/fstab
   fi
   sudo systemctl daemon-reload
@@ -44,7 +44,7 @@ net.core.wmem_max=7500000
 EOF
 
 sudo zypper install systemd-zram-service 
-sudo zramswapon 
+sudo zramswapon || true # hack to continue if already enabled
 sudo systemctl enable zramswap.service
 
 sudo tee /etc/sysctl.d/\
@@ -55,7 +55,7 @@ EOF
 
 sudo sysctl --system
 
-sudo zypper in power-profiles-daemon -y
+sudo zypper install -y power-profiles-daemon
 sudo systemctl enable --now power-profiles-daemon.service
 
 sudo firewall-cmd --set-default-zone home
@@ -64,11 +64,14 @@ sudo zypper install -y helix git zsh fish yazi starship btop chezmoi nvtop ansib
 sudo zypper install -y ghostty keepassxc thunderbird
 sudo zypper in -y sane-airscan
 sudo zypper install -y google-noto-sans-cjk-fonts fontawesome-fonts symbols-only-nerd-fonts fira-code-fonts mozilla-fira-fonts inter-fonts inter-variable-fonts jetbrains-mono-fonts
-sudo zypper install -y keepassxc thunderbird zathura zathura-plugin-cb zathura-plugin-djvu zathura-plugin-ps libva-utils
+sudo zypper install -y zathura zathura-plugin-cb zathura-plugin-djvu zathura-plugin-ps libva-utils
+
 sudo rpm --import https://brave-browser-rpm-release.s3.brave.com/brave-core.asc
 sudo zypper addrepo https://brave-browser-rpm-release.s3.brave.com/brave-browser.repo
 sudo zypper install -y brave-browser
+
 sudo zypper install -y steam gamemode lutris mangohud dxvk xpadneo
+
 sudo flatpak install -y com.github.rafostar.Clapper com.github.rafostar.Clapper.Enhancers io.missioncenter.MissionCenter io.github.flattool.Warehouse io.github.dvlv.boxbuddyrs io.podman_desktop.PodmanDesktop com.github.marhkb.Pods com.heroicgameslauncher.hgl com.usebottles.bottles com.mikrotik.WinBox com.mattjakeman.ExtensionManager
 
 
