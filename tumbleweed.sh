@@ -65,16 +65,14 @@ sudo systemctl enable --now power-profiles-daemon.service
 sudo firewall-cmd --set-default-zone home
 sudo cryptsetup --allow-discards --perf-no_read_workqueue --perf-no_write_workqueue --persistent refresh cr_root
 sudo zypper install -y helix git zsh fish yazi starship btop chezmoi nvtop ansible bat eza lsd git-delta dust duf broot fd ripgrep fzf jq sd cheat bottom gping procs zoxide doggo lazygit
-sudo zypper install -y ghostty keepassxc thunderbird
-sudo zypper in -y sane-airscan
+sudo zypper install -y ghostty keepassxc thunderbird zathura zathura-plugin-cb zathura-plugin-djvu zathura-plugin-ps libva-utils sane-airscan
 sudo zypper install -y google-noto-sans-cjk-fonts fontawesome-fonts symbols-only-nerd-fonts fira-code-fonts mozilla-fira-fonts inter-fonts inter-variable-fonts jetbrains-mono-fonts
-sudo zypper install -y zathura zathura-plugin-cb zathura-plugin-djvu zathura-plugin-ps libva-utils
 
 sudo rpm --import https://brave-browser-rpm-release.s3.brave.com/brave-core.asc
 sudo zypper addrepo https://brave-browser-rpm-release.s3.brave.com/brave-browser.repo
 sudo zypper install -y brave-browser
 
-sudo zypper install -y –auto-agree-with-licenses steam gamemode lutris mangohud dxvk xpadneo-kmp-default
+sudo zypper install steam gamemode lutris mangohud dxvk xpadneo-kmp-default
 
 sudo flatpak install -y com.github.rafostar.Clapper com.github.rafostar.Clapper.Enhancers io.missioncenter.MissionCenter io.github.flattool.Warehouse io.github.dvlv.boxbuddyrs io.podman_desktop.PodmanDesktop com.github.marhkb.Pods com.heroicgameslauncher.hgl com.usebottles.bottles com.mikrotik.WinBox com.mattjakeman.ExtensionManager
 
